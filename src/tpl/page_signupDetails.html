@@ -63,13 +63,19 @@
     <tab heading="Paso 3" disabled="step2.$invalid" active="steps.step3" select="steps.percent=60">
       <p class="m-b">Felicidades! Elige el plan que más se acomode a tus necesidades.</p>
       <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
-      <div class="row">
+      <!--<div class="row">
             <div class="col-md-12">
               <div class="row row-sm text-center">
                 <div class="col-xs-6 col-md-3" ng-repeat="plan in planes">
-                  <a href ng-class="{ 'block panel padder-v bg-primary item' : $first }" required>
+                  <a href ng-class="{ 'block panel padder-v bg-primary item' : plan.descripcion == 'Básico',
+                                      'block panel padder-v bg-info item' : plan.descripcion == 'Normal',
+                                      'block panel padder-v bg-dark item' : plan.descripcion == 'Avanzado',
+                                      'block panel padder-v bg-success item' : plan.descripcion == 'Premium'}"
+                            ng-click="VerPlan(plan)" required>
                     <span class="text-white font-thin h1 block">{{ plan.descripcion }}</span>
                     <span class="text-muted text-lg">{{ plan.rangoEstudiantes }}</span>
+                    <br>
+                    <span class="text-muted text-sm">Estudiantes</span>
                     <br>
                     <span class="text-muted text-ms">Mensual ${{ plan.precioMensual }}</span>
                     <br>
@@ -78,43 +84,7 @@
                     <span class="text-muted text-ms">Anual ${{ plan.precioAnual }}</span>
                   </a>
                 </div>
-                <div class="col-xs-6 col-md-3" required>
-                  <a href class="block panel padder-v bg-info item">
-                    <span class="text-white font-thin h1 block">1000 - 3000</span>
-                    <span class="text-muted text-md">Estudiantes</span>
-                    <br>
-                    <span class="text-muted text-ms">Mensual $600,000</span>
-                    <br>
-                    <span class="text-muted text-ms">Semestral $3'500,000</span>
-                    <br>
-                    <span class="text-muted text-ms">Anual $6'500,000</span>
-                  </a>
-                </div>
-                <div class="col-xs-6 col-md-3" required>
-                  <a href class="block panel padder-v bg-dark item">
-                    <span class="text-white font-thin h1 block">3000 - 5000</span>
-                    <span class="text-muted text-md">Estudiantes</span>
-                    <br>
-                    <span class="text-muted text-ms">Mensual $1'200,000</span>
-                    <br>
-                    <span class="text-muted text-ms">Semestral $6'500,000</span>
-                    <br>
-                    <span class="text-muted text-ms">Anual $12'000,000</span>
-                  </a>
-                </div>
-                <div class="col-xs-6 col-md-3" required>
-                  <a href class="block panel padder-v bg-success item">
-                    <span class="text-white font-thin h1 block">5000 - 10000</span>
-                    <span class="text-muted text-md">Estudiantes</span>
-                    <br>
-                    <span class="text-muted text-ms">Mensual $2'250,000</span>
-                    <br>
-                    <span class="text-muted text-ms">Semestral $12'500,000</span>
-                    <br>
-                    <span class="text-muted text-ms">Anual $22'000,000</span>
-                  </a>
-                </div>  
-
+                  
                 <div id="resultadoPlan" class="col-xs-12 m-b-md">
                   <div class="r bg-light dker item hbox no-border">
                     <div class="col w-xs v-middle hidden-md">
@@ -128,7 +98,160 @@
                 </div>
               </div>
             </div>
+            </div>-->
+    <div class="wrapper-md">
+      <div class="row row-sm">
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="panel b-a">
+            <div class="panel-heading text-center bg-info no-border">
+              <h4 class="text-u-c m-b-none">Básico</h4>
+              <h2 class="m-t-none">
+                <sup class="pos-rlt" style="top:-22px">$</sup>
+                <span class="text-2x text-lt">150 mil</span>
+                <span class="text-xs">/ m</span>
+              </h2>
             </div>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i>Acceso para 1000 usuarios
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 1 Sede
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 10 GB de almacenamiento
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Notificaciones vía correo
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Soporte gratis por seis meses
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Actualizaciones gratis por seis meses
+              </li>
+            </ul>
+            <div class="panel-footer text-center">
+              <a href class="btn btn-info font-bold m">Pruebálo gratis</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="panel b-a">
+            <div class="panel-heading text-center bg-warning no-border">
+              <span class="text-u-c m-b-none font-bold">Normal</span>          
+            </div>
+            <div class="wrapper text-center b-b b-light">
+              <h2 class="m-t-none">
+                <sup class="pos-rlt" style="top:-22px">$</sup>
+                <span class="text-2x text-lt">600 mil</span>
+                <span class="text-xs">/ m</span>
+              </h2>
+            </div>
+            <ul class="list-group text-center no-borders m-t-sm">
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Acceso para 2000 usuarios
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 2 Sedes
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 25 GB de almacenamiento
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Notificaciones vía correo
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Soporte gratis por seis meses</span>
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Actualizaciones gratis por seis meses</span>
+              </li>
+            </ul>
+            <div class="panel-footer text-center">
+              <a href class="btn btn-warning font-bold m">Pruebálo gratis</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="panel b-a">
+            <div class="panel-heading wrapper-xs bg-success no-border">          
+            </div>
+            <div class="wrapper text-center">
+              <h4 class="text-u-c m-b-none">Avanzado</h4>
+              <h2 class="m-t-none">
+                <sup class="pos-rlt" style="top:-22px">$</sup>
+                <span class="text-2x text-lt">1'200</span>
+                <span class="text-xs">/ m</span>
+              </h2>
+            </div>
+            <ul class="list-group text-center no-borders m-t-sm">
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Acceso para 3000 usuarios
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 3 Sedes
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 50 GB de almacenamiento
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Notificaciones vía correo
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Soporte gratis por seis meses</span>
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Actualizaciones gratis por seis meses</span>
+              </li>
+            </ul>
+            <div class="panel-footer text-center">
+              <a href class="btn btn-warning font-bold m">Pruebálo gratis</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 hidden-md">
+          <div class="panel b-a">
+            <div class="panel-heading wrapper-xs bg-primary no-border">
+
+            </div>
+            <div class="wrapper text-center b-b b-light">
+              <h4 class="text-u-c m-b-none">Premium</h4>
+              <h2 class="m-t-none">
+                <sup class="pos-rlt" style="top:-22px">$</sup>
+                <span class="text-2x text-lt">2'250</span>
+                <span class="text-xs">/ m</span>
+              </h2>
+            </div>
+            <ul class="list-group text-center no-borders m-t-sm">
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Acceso para 5000 usuarios
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 3 Sedes
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 100 GB de almacenamiento
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Aplicación móvil + Notificaciones en TR (Tiempo real)
+              </li>    
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Soporte gratis por un año meses</span>
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Actualizaciones gratis por un año</span>
+              </li>
+            </ul>
+            <div class="panel-footer text-center">
+              <a href class="btn btn-warning font-bold m">Pruebálo gratis</a>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+</div>
+
       <div class="m-t m-b">
         <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step2=true">Prev</button>
         <button type="button" class="btn btn-default btn-rounded" ng-click="steps.percent=100">Click me to Finish</button>

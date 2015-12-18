@@ -15,10 +15,14 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
         ];
     
     $scope.planes = [
-        { descripcion : "Básico", rangoEstudiantes : "0 - 1000", precioMensual : "150.000",
+        { descripcion : "Básico", rangoEstudiantes : "0 - 1000", precioMensual : "150 mil",
             precioSemestral : "800.000", precioAnual : "1'400.000", clase : "block panel padder-v bg-primary item" },
-        { descripcion : "Normal", rangoEstudiantes : "1000 - 3000", precioMensual : "150.000",
-            precioSemestral : "800.000", precioAnual : "1'400.000", clase : "block panel padder-v bg-primary item" }
+        { descripcion : "Normal", rangoEstudiantes : "1000 - 3000", precioMensual : "600 mil",
+            precioSemestral : "3'500.000", precioAnual : "6'500.000", clase : "block panel padder-v bg-info item" },
+        { descripcion : "Avanzado", rangoEstudiantes : "3000 - 5000", precioMensual : "1'200 mil",
+            precioSemestral : "6'500.000", precioAnual : "12'000.000", clase : "block panel padder-v bg-dark item" },
+        { descripcion : "Premium", rangoEstudiantes : "5000 - 10000", precioMensual : "2'250 mil",
+            precioSemestral : "12'500.000", precioAnual : "22'000.000", clase : "block panel padder-v bg-success item" }
     ]
     
     
@@ -35,5 +39,9 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
           $scope.ubicaciones = response.data.results;
         });
     };
-
+    
+    $scope.VerPlan = function (plan)
+    {
+        
+    }
 }]);
