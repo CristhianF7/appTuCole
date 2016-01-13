@@ -1,6 +1,11 @@
 'use strict';
 
 app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $http, $state) {
+    $scope.InformacionColegio = {};
+    $scope.InformacionColegio.ubicacion = {};
+    $scope.InformacionColegio.tipoInstitucion = {};
+    $scope.InformacionColegio.tipoJornada = {};
+    
     $scope.Jornadas = [
         { descripcion: 'Completa',  codigo: 'CP' },
         { descripcion: 'Mañana',    codigo: 'MA'},
@@ -25,13 +30,8 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
             precioSemestral : "12'500.000", precioAnual : "22'000.000", clase : "block panel padder-v bg-success item" }
     ]
     
-    
-    $scope.tipoInstitucion = {};
-    $scope.tipoJornada = {};
-    $scope.ubicacion = {};
-    
-    $scope.refreshAddresses = function(address) {
-        var params = {address: address, sensor: false};
+    $scope.BuscarDireccion = function(direccion) {
+        var params = {address: direccion, sensor: false};
         return $http.get(
           'http://maps.googleapis.com/maps/api/geocode/json',
           {params: params}
@@ -40,7 +40,12 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
         });
     };
     
-    $scope.VerPlan = function (plan)
+    $scope.TerminarRegistro = function (plan)
+    {
+        
+    }
+    
+    $scope.TerminarRegistroPrueba = function (plan)
     {
         
     }

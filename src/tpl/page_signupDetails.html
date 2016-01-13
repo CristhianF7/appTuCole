@@ -8,10 +8,10 @@
       <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
       <form name="step1" class="form-validation">
         <p>Nombre de tu colegio:</p>
-        <input type="text" name="nombreColegio" class="form-control" ng-model="nombreColegio" required ng-change="step1.nombreColegio.$valid ? (steps.percent=10) : (steps.percent=0)" tabindex="1">
+        <input type="text" name="nombreColegio" class="form-control" ng-model="InformacionColegio.nombreColegio" required ng-change="step1.nombreColegio.$valid ? (steps.percent=10) : (steps.percent=0)" tabindex="1">
           <br>
         <p>Ubicación</p>    
-            <ui-select ng-model="ubicacion"
+            <ui-select ng-model="InformacionColegio.ubicacion"
                      name="ubicacion"   
                      theme="bootstrap"
                      ng-disabled="disabled"
@@ -21,13 +21,13 @@
                      required ng-change="step1.ubicacion.$valid ? (steps.percent=20) : (steps.percent=10)">
             <ui-select-match placeholder="Pais">{{$select.selected.formatted_address}}</ui-select-match>
             <ui-select-choices repeat="ubic in ubicaciones track by $index"
-                     refresh="refreshAddresses($select.search)"
+                     refresh="BuscarDireccion($select.search)"
                      refresh-delay="0">
               <div ng-bind-html="ubic.formatted_address | highlight: $select.search"></div>
             </ui-select-choices>
             </ui-select>
         <p class="m-t">Dirección:</p>
-        <input type="text" name="direccion" class="form-control" ng-model="direccion" required ng-change="step1.direccion.$valid ? (steps.percent=30) : (steps.percent=20)" tabindex="3">  
+        <input type="text" name="direccion" class="form-control" ng-model="InformacionColegio.direccion" required ng-change="step1.direccion.$valid ? (steps.percent=30) : (steps.percent=20)" tabindex="3">  
         <div class="m-t m-b">
           <button type="submit" ng-disabled="step1.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step2=true">Siguiente</button>
         </div>
@@ -38,14 +38,14 @@
         <p class="m-b">Continue the next step</p>
         <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
         <p>Tipo de Institución</p>
-        <ui-select ng-model="tipoInstitucion.selected" tabindex="4" theme="bootstrap" required ng-change="step2.tipoInstitucion.$valid ? (steps.percent=40) : (steps.percent=30)">
+        <ui-select ng-model="InformacionColegio.tipoInstitucion.selected" tabindex="4" theme="bootstrap" required ng-change="step2.tipoInstitucion.$valid ? (steps.percent=40) : (steps.percent=30)">
             <ui-select-match placeholder="Seleccione el Tipo de Institución">{{$select.selected.descripcion}}</ui-select-match>
             <ui-select-choices repeat="tipo in TiposInstitucion | filter: $select.search">
             <div ng-bind-html="tipo.descripcion | highlight: $select.search"></div>
             </ui-select-choices>
         </ui-select>
         <p>Tipo de Jornada</p>
-        <ui-select ng-model="tipoJornada.selected" tabindex="5" theme="bootstrap" required ng-change="step2.tipoJornada.$valid ? (steps.percent=50) : (steps.percent=40)">
+        <ui-select ng-model="InformacionColegio.tipoJornada.selected" tabindex="5" theme="bootstrap" required ng-change="step2.tipoJornada.$valid ? (steps.percent=50) : (steps.percent=40)">
             <ui-select-match placeholder="Seleccione el Tipo Jornada">{{$select.selected.descripcion}}</ui-select-match>
             <ui-select-choices repeat="tipoJornada in Jornadas | filter: $select.search">
             <div ng-bind-html="tipoJornada.descripcion | highlight: $select.search"></div>
@@ -53,7 +53,7 @@
         </ui-select>  
         
         <p>Número de Sedes</p>
-        <input ui-jq="TouchSpin" type="text" value="10" class="form-control" data-min='0' data-max="20" data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"  data-verticaldownclass="fa fa-caret-down" id="numSedes" tabindex="6" ng-model="numSedes" required ng-change="step2.numSedes.$valid ? (steps.percent=60) : (steps.percent=50)"> 
+        <input ui-jq="TouchSpin" type="text" value="10" class="form-control" data-min='0' data-max="20" data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"  data-verticaldownclass="fa fa-caret-down" id="numSedes" tabindex="6" ng-model="InformacionColegio.numeroSedes" required ng-change="step2.numSedes.$valid ? (steps.percent=60) : (steps.percent=50)"> 
         <div class="m-t m-b">
           <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step1=true">Anterior</button>
           <button type="submit" ng-disabled="step2.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step3=true">Siguiente</button>
@@ -63,42 +63,6 @@
     <tab heading="Paso 3" disabled="step2.$invalid" active="steps.step3" select="steps.percent=60">
       <p class="m-b">Felicidades! Elige el plan que más se acomode a tus necesidades.</p>
       <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
-      <!--<div class="row">
-            <div class="col-md-12">
-              <div class="row row-sm text-center">
-                <div class="col-xs-6 col-md-3" ng-repeat="plan in planes">
-                  <a href ng-class="{ 'block panel padder-v bg-primary item' : plan.descripcion == 'Básico',
-                                      'block panel padder-v bg-info item' : plan.descripcion == 'Normal',
-                                      'block panel padder-v bg-dark item' : plan.descripcion == 'Avanzado',
-                                      'block panel padder-v bg-success item' : plan.descripcion == 'Premium'}"
-                            ng-click="VerPlan(plan)" required>
-                    <span class="text-white font-thin h1 block">{{ plan.descripcion }}</span>
-                    <span class="text-muted text-lg">{{ plan.rangoEstudiantes }}</span>
-                    <br>
-                    <span class="text-muted text-sm">Estudiantes</span>
-                    <br>
-                    <span class="text-muted text-ms">Mensual ${{ plan.precioMensual }}</span>
-                    <br>
-                    <span class="text-muted text-ms">Semestral ${{ plan.precioSemestral }}</span>
-                    <br>
-                    <span class="text-muted text-ms">Anual ${{ plan.precioAnual }}</span>
-                  </a>
-                </div>
-                  
-                <div id="resultadoPlan" class="col-xs-12 m-b-md">
-                  <div class="r bg-light dker item hbox no-border">
-                    <div class="col w-xs v-middle hidden-md">
-                      <div ng-init="d3_3=[60,40]" ui-jq="sparkline" ui-options="{{d3_3}}, {type:'pie', height:40, sliceColors:['{{app.color.warning}}','#fff']}" class="sparkline inline"></div>
-                    </div>
-                    <div class="col dk padder-v r-r">
-                      <div class="text-primary-dk font-thin h1"><span>{{ precioTotal }}</span></div>
-                      <span class="text-muted text-xs">Aprovecha nuestros grandes descuentos</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            </div>-->
     <div class="wrapper-md">
       <div class="row row-sm">
         <div class="col-lg-3 col-md-4 col-sm-6">
@@ -132,7 +96,9 @@
               </li>
             </ul>
             <div class="panel-footer text-center">
-              <a href class="btn btn-info font-bold m">Pruebálo gratis</a>
+              <input type="button" class="btn btn-info font-bold m" ng-click="TerminarRegistroPrueba('Basico')" value="Pruebálo gratis" />
+                <br>
+              <input type="button" class="btn btn-success font-bold m" ng-click="TerminarRegistro('Basico')" value="Adquirir" />
             </div>
           </div>
         </div>
@@ -169,7 +135,9 @@
               </li>
             </ul>
             <div class="panel-footer text-center">
-              <a href class="btn btn-warning font-bold m">Pruebálo gratis</a>
+              <input type="button" class="btn btn-warning font-bold m" ng-click="TerminarRegistroPrueba('Normal')" value="Pruebálo gratis" />
+                <br>
+              <input type="button" class="btn btn-success font-bold m" ng-click="TerminarRegistro('Normal')" value="Adquirir" />
             </div>
           </div>
         </div>
@@ -206,7 +174,9 @@
               </li>
             </ul>
             <div class="panel-footer text-center">
-              <a href class="btn btn-warning font-bold m">Pruebálo gratis</a>
+              <input type="button" class="btn btn-success font-bold m" ng-click="TerminarRegistroPrueba('Avanzado')" value="Pruebálo gratis" />
+                <br>
+              <input type="button" class="btn btn-success font-bold m" ng-click="TerminarRegistro('Avanzado')" value="Adquirir" />
             </div>
           </div>
         </div>
@@ -237,25 +207,22 @@
                 <i class="icon-check text-success m-r-xs"></i> Aplicación móvil + Notificaciones en TR (Tiempo real)
               </li>    
               <li class="list-group-item">
-                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Soporte gratis por un año meses</span>
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Soporte gratis por un año</span>
               </li>
               <li class="list-group-item">
                 <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Actualizaciones gratis por un año</span>
               </li>
             </ul>
             <div class="panel-footer text-center">
-              <a href class="btn btn-warning font-bold m">Pruebálo gratis</a>
+              <input type="button" class="btn btn-primary font-bold m" ng-click="TerminarRegistroPrueba('Premium')" value="Pruebálo gratis" />
+                <br>
+              <input type="button" class="btn btn-success font-bold m" ng-click="TerminarRegistro('Premium')" value="Adquirir" />
             </div>
           </div>
         </div>
       </div>  
     </div>
 </div>
-
-      <div class="m-t m-b">
-        <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step2=true">Prev</button>
-        <button type="button" class="btn btn-default btn-rounded" ng-click="steps.percent=100">Click me to Finish</button>
-      </div>
     </tab>
   </tabset>
 </div>

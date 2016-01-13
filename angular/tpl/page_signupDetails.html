@@ -1,63 +1,256 @@
 <div class="bg-light lter b-b wrapper-md">
-  <h1 class="m-n font-thin h3">Completa tu información en 3 Pasos</h1>
+  <h1 class="m-n font-thin h3">Completa tu información</h1>
 </div>
 <div class="wrapper-md">
   <tabset class="tab-container" ng-init="steps={percent:20, step1:true, step2:false, step3:false}">
     <tab heading="Paso 1" active="steps.step1" select="steps.percent=10">
-      <p class="m-b">Progreso.</p>
+      <p class="m-b">Obtén todas las estadisticas de tu colegio.</p>
       <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
-      <h4>Datos Básicos</h4>
       <form name="step1" class="form-validation">
         <p>Nombre de tu colegio:</p>
-        <input type="text" name="nombreColegio" class="form-control" ng-model="nombre" required ng-change="step1.email.$valid ? (steps.percent=30) : (steps.percent=20)">
+        <input type="text" name="nombreColegio" class="form-control" ng-model="nombreColegio" required ng-change="step1.nombreColegio.$valid ? (steps.percent=10) : (steps.percent=0)" tabindex="1">
+          <br>
         <p>Ubicación</p>    
-            <ui-select ng-model="ubicacion.selected"
+            <ui-select ng-model="ubicacion"
+                     name="ubicacion"   
                      theme="bootstrap"
                      ng-disabled="disabled"
                      reset-search-input="false"
-                     style="width: 300px;">
+                     style="width: 300px;" 
+                     tabindex="2"
+                     required ng-change="step1.ubicacion.$valid ? (steps.percent=20) : (steps.percent=10)">
             <ui-select-match placeholder="Pais">{{$select.selected.formatted_address}}</ui-select-match>
             <ui-select-choices repeat="ubic in ubicaciones track by $index"
                      refresh="refreshAddresses($select.search)"
                      refresh-delay="0">
-              <div ng-bind-html="address.formatted_address | highlight: $select.search"></div>
+              <div ng-bind-html="ubic.formatted_address | highlight: $select.search"></div>
             </ui-select-choices>
             </ui-select>
-            <span class="help-block">{{address.selected.formatted_address}}</span>
         <p class="m-t">Dirección:</p>
-        <input type="text" name="direccion" class="form-control" ng-model="direccion" required>  
-        
+        <input type="text" name="direccion" class="form-control" ng-model="direccion" required ng-change="step1.direccion.$valid ? (steps.percent=30) : (steps.percent=20)" tabindex="3">  
         <div class="m-t m-b">
-          <button type="submit" ng-disabled="step1.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step2=true">Next</button>
+          <button type="submit" ng-disabled="step1.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step2=true">Siguiente</button>
         </div>
       </form>
     </tab>
     <tab heading="Paso 2" disabled="step1.$invalid" active="steps.step2" select="steps.percent=30">
       <form name="step2" class="form-validation">
-        <p class="m-b">Progreso.</p>
+        <p class="m-b">Continue the next step</p>
         <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
+        <p>Tipo de Institución</p>
+        <ui-select ng-model="tipoInstitucion.selected" tabindex="4" theme="bootstrap" required ng-change="step2.tipoInstitucion.$valid ? (steps.percent=40) : (steps.percent=30)">
+            <ui-select-match placeholder="Seleccione el Tipo de Institución">{{$select.selected.descripcion}}</ui-select-match>
+            <ui-select-choices repeat="tipo in TiposInstitucion | filter: $select.search">
+            <div ng-bind-html="tipo.descripcion | highlight: $select.search"></div>
+            </ui-select-choices>
+        </ui-select>
         <p>Tipo de Jornada</p>
-        <ui-select ng-model="tipoJorna.selected" theme="bootstrap">
-            <ui-select-match placeholder="Seleccione el Tipo Jornada">{{$select.selected.name}}</ui-select-match>
+        <ui-select ng-model="tipoJornada.selected" tabindex="5" theme="bootstrap" required ng-change="step2.tipoJornada.$valid ? (steps.percent=50) : (steps.percent=40)">
+            <ui-select-match placeholder="Seleccione el Tipo Jornada">{{$select.selected.descripcion}}</ui-select-match>
             <ui-select-choices repeat="tipoJornada in Jornadas | filter: $select.search">
             <div ng-bind-html="tipoJornada.descripcion | highlight: $select.search"></div>
-            <small ng-bind-html="tipoJornada.descripcion | highlight: $select.search"></small>
             </ui-select-choices>
         </ui-select>  
+        
+        <p>Número de Sedes</p>
+        <input ui-jq="TouchSpin" type="text" value="10" class="form-control" data-min='0' data-max="20" data-verticalbuttons="true" data-verticalupclass="fa fa-caret-up"  data-verticaldownclass="fa fa-caret-down" id="numSedes" tabindex="6" ng-model="numSedes" required ng-change="step2.numSedes.$valid ? (steps.percent=60) : (steps.percent=50)"> 
         <div class="m-t m-b">
-          <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step1=true">Prev</button>
-          <button type="submit" ng-disabled="step2.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step3=true">Next</button>
+          <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step1=true">Anterior</button>
+          <button type="submit" ng-disabled="step2.$invalid" class="btn btn-default btn-rounded" ng-click="steps.step3=true">Siguiente</button>
         </div>
       </form>
     </tab>
-    <tab heading="Step 3" disabled="step2.$invalid" active="steps.step3" select="steps.percent=60">
-      <p class="m-b">Congraduations! You got the last step.</p>
+    <tab heading="Paso 3" disabled="step2.$invalid" active="steps.step3" select="steps.percent=60">
+      <p class="m-b">Felicidades! Elige el plan que más se acomode a tus necesidades.</p>
       <progressbar value="steps.percent" class="progress-xs" type="success"></progressbar>
-      <p>Just one click to finish it.</p>
-      <div class="m-t m-b">
-        <button type="button" class="btn btn-default btn-rounded" ng-click="steps.step2=true">Prev</button>
-        <button type="button" class="btn btn-default btn-rounded" ng-click="steps.percent=100">Click me to Finish</button>
-      </div>
+      <!--<div class="row">
+            <div class="col-md-12">
+              <div class="row row-sm text-center">
+                <div class="col-xs-6 col-md-3" ng-repeat="plan in planes">
+                  <a href ng-class="{ 'block panel padder-v bg-primary item' : plan.descripcion == 'Básico',
+                                      'block panel padder-v bg-info item' : plan.descripcion == 'Normal',
+                                      'block panel padder-v bg-dark item' : plan.descripcion == 'Avanzado',
+                                      'block panel padder-v bg-success item' : plan.descripcion == 'Premium'}"
+                            ng-click="VerPlan(plan)" required>
+                    <span class="text-white font-thin h1 block">{{ plan.descripcion }}</span>
+                    <span class="text-muted text-lg">{{ plan.rangoEstudiantes }}</span>
+                    <br>
+                    <span class="text-muted text-sm">Estudiantes</span>
+                    <br>
+                    <span class="text-muted text-ms">Mensual ${{ plan.precioMensual }}</span>
+                    <br>
+                    <span class="text-muted text-ms">Semestral ${{ plan.precioSemestral }}</span>
+                    <br>
+                    <span class="text-muted text-ms">Anual ${{ plan.precioAnual }}</span>
+                  </a>
+                </div>
+                  
+                <div id="resultadoPlan" class="col-xs-12 m-b-md">
+                  <div class="r bg-light dker item hbox no-border">
+                    <div class="col w-xs v-middle hidden-md">
+                      <div ng-init="d3_3=[60,40]" ui-jq="sparkline" ui-options="{{d3_3}}, {type:'pie', height:40, sliceColors:['{{app.color.warning}}','#fff']}" class="sparkline inline"></div>
+                    </div>
+                    <div class="col dk padder-v r-r">
+                      <div class="text-primary-dk font-thin h1"><span>{{ precioTotal }}</span></div>
+                      <span class="text-muted text-xs">Aprovecha nuestros grandes descuentos</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>-->
+    <div class="wrapper-md">
+      <div class="row row-sm">
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="panel b-a">
+            <div class="panel-heading text-center bg-info no-border">
+              <h4 class="text-u-c m-b-none">Básico</h4>
+              <h2 class="m-t-none">
+                <sup class="pos-rlt" style="top:-22px">$</sup>
+                <span class="text-2x text-lt">150 mil</span>
+                <span class="text-xs">/ m</span>
+              </h2>
+            </div>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i>Acceso para 1000 usuarios
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 1 Sede
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 10 GB de almacenamiento
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Notificaciones vía correo
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Soporte gratis por seis meses
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Actualizaciones gratis por seis meses
+              </li>
+            </ul>
+            <div class="panel-footer text-center">
+              <a href class="btn btn-info font-bold m">Pruebálo gratis</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="panel b-a">
+            <div class="panel-heading text-center bg-warning no-border">
+              <span class="text-u-c m-b-none font-bold">Normal</span>          
+            </div>
+            <div class="wrapper text-center b-b b-light">
+              <h2 class="m-t-none">
+                <sup class="pos-rlt" style="top:-22px">$</sup>
+                <span class="text-2x text-lt">600 mil</span>
+                <span class="text-xs">/ m</span>
+              </h2>
+            </div>
+            <ul class="list-group text-center no-borders m-t-sm">
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Acceso para 2000 usuarios
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 2 Sedes
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 25 GB de almacenamiento
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Notificaciones vía correo
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Soporte gratis por seis meses</span>
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Actualizaciones gratis por seis meses</span>
+              </li>
+            </ul>
+            <div class="panel-footer text-center">
+              <a href class="btn btn-warning font-bold m">Pruebálo gratis</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="panel b-a">
+            <div class="panel-heading wrapper-xs bg-success no-border">          
+            </div>
+            <div class="wrapper text-center">
+              <h4 class="text-u-c m-b-none">Avanzado</h4>
+              <h2 class="m-t-none">
+                <sup class="pos-rlt" style="top:-22px">$</sup>
+                <span class="text-2x text-lt">1'200</span>
+                <span class="text-xs">/ m</span>
+              </h2>
+            </div>
+            <ul class="list-group text-center no-borders m-t-sm">
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Acceso para 3000 usuarios
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 3 Sedes
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 50 GB de almacenamiento
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Notificaciones vía correo
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Soporte gratis por seis meses</span>
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Actualizaciones gratis por seis meses</span>
+              </li>
+            </ul>
+            <div class="panel-footer text-center">
+              <a href class="btn btn-warning font-bold m">Pruebálo gratis</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 hidden-md">
+          <div class="panel b-a">
+            <div class="panel-heading wrapper-xs bg-primary no-border">
+
+            </div>
+            <div class="wrapper text-center b-b b-light">
+              <h4 class="text-u-c m-b-none">Premium</h4>
+              <h2 class="m-t-none">
+                <sup class="pos-rlt" style="top:-22px">$</sup>
+                <span class="text-2x text-lt">2'250</span>
+                <span class="text-xs">/ m</span>
+              </h2>
+            </div>
+            <ul class="list-group text-center no-borders m-t-sm">
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Acceso para 5000 usuarios
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 3 Sedes
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> 100 GB de almacenamiento
+              </li>
+              <li class="list-group-item">
+                <i class="icon-check text-success m-r-xs"></i> Aplicación móvil + Notificaciones en TR (Tiempo real)
+              </li>    
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Soporte gratis por un año meses</span>
+              </li>
+              <li class="list-group-item">
+                <i class="icon-close text-danger m-r-xs"></i> <span class="text-l-t">Actualizaciones gratis por un año</span>
+              </li>
+            </ul>
+            <div class="panel-footer text-center">
+              <a href class="btn btn-warning font-bold m">Pruebálo gratis</a>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+</div>
     </tab>
   </tabset>
 </div>

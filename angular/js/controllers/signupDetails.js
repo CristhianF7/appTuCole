@@ -1,6 +1,35 @@
 'use strict';
 
 app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $http, $state) {
+    $scope.Jornadas = [
+        { descripcion: 'Completa',  codigo: 'CP' },
+        { descripcion: 'Mañana',    codigo: 'MA'},
+        { descripcion: 'Tarde',     codigo: 'TA'},
+        { descripcion: 'Noche',     codigo: 'NO'}
+        ];
+    
+    $scope.TiposInstitucion = [
+        { descripcion: 'Publico',  codigo: 'PU' },
+        { descripcion: 'Privado',    codigo: 'PR'},
+        { descripcion: 'Educación especial',     codigo: 'EE'},
+        ];
+    
+    $scope.planes = [
+        { descripcion : "Básico", rangoEstudiantes : "0 - 1000", precioMensual : "150 mil",
+            precioSemestral : "800.000", precioAnual : "1'400.000", clase : "block panel padder-v bg-primary item" },
+        { descripcion : "Normal", rangoEstudiantes : "1000 - 3000", precioMensual : "600 mil",
+            precioSemestral : "3'500.000", precioAnual : "6'500.000", clase : "block panel padder-v bg-info item" },
+        { descripcion : "Avanzado", rangoEstudiantes : "3000 - 5000", precioMensual : "1'200 mil",
+            precioSemestral : "6'500.000", precioAnual : "12'000.000", clase : "block panel padder-v bg-dark item" },
+        { descripcion : "Premium", rangoEstudiantes : "5000 - 10000", precioMensual : "2'250 mil",
+            precioSemestral : "12'500.000", precioAnual : "22'000.000", clase : "block panel padder-v bg-success item" }
+    ]
+    
+    
+    $scope.tipoInstitucion = {};
+    $scope.tipoJornada = {};
+    $scope.ubicacion = {};
+    
     $scope.refreshAddresses = function(address) {
         var params = {address: address, sensor: false};
         return $http.get(
@@ -10,15 +39,9 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
           $scope.ubicaciones = response.data.results;
         });
     };
-    $scope.TipoJornadas = [ { descripcion : "Completa"}, { descripcion : "Mañana"} , { descripcion : "Tarde"}];
     
-    $scope.Jornadas = [
-        { descripcion: 'Completa',  codigo: 'CP' },
-        { descripcion: 'Mañana',    codigo: 'MA'},
-        { descripcion: 'Tarde',     codigo: 'TA'},
-        { descripcion: 'Noche',     codigo: 'NO'}
-        ];
-
-    $scope.tipoJorna = {};
-    $scope.ubicacion = {};
+    $scope.VerPlan = function (plan)
+    {
+        
+    }
 }]);
