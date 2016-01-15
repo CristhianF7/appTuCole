@@ -257,6 +257,7 @@ angular.module('app')
               })
               .state('access.signupDetails', {
                   url: '/signupDetails',
+                  params :  { info : null}, //{ email: null, usuario: null, pass: null},
                   templateUrl: 'tpl/page_signupDetails.html',
                   controller: 'SignUpDetails',
                   resolve: load( ['ui.select', 'ngImgCrop', 'js/controllers/signupDetails.js'])

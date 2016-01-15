@@ -12,7 +12,8 @@ app.controller('SignupFormController', ['$scope', '$http', '$state', function($s
       //if ( !response.data.user ) {
         //  $scope.authError = response;
         //}else{
-        $state.go('access.signupDetails');
+        var informacion = { email : $scope.user.email, usuario: $scope.user.usuario, pass : $scope.user.password }
+        $state.go('access.signupDetails', { info : informacion });
         //}
       //}, function(x) {
         //$scope.authError = 'Server Error';

@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $http, $state) {
+app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', function($scope, $http, $state, $stateParams) {
     $scope.InformacionColegio = {};
     $scope.InformacionColegio.ubicacion = {};
     $scope.InformacionColegio.tipoInstitucion = {};
@@ -42,7 +42,39 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
     
     $scope.TerminarRegistro = function (plan)
     {
+        var parametros = {
+                            nombreColegio: $scope.InformacionColegio.nombreColegio,
+                            username: $stateParams.info.usuario, 
+                            emailUsuario: $stateParams.info.email, 
+                            password: $stateParams.info.pass,
+                            emailColegio: $stateParams.info.email,
+                            estadoColegio: 1,
+                            tipoColegio: 1,                            
+                            telefonoColegio: $scope.InformacionColegio.telefono,
+                            sedePpal: $scope.InformacionColegio.sedePrincipal
+            }
         
+        $http({
+            method: 'POST',
+            url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/registro',
+            dataType: "json",
+            data: JSON.stringify(parametros),
+            success: function(respuesta) {
+                var res = respuesta;
+                alert(respuesta)
+            },
+            error: function (event, data){
+                alert(data);
+            }
+        });
+        
+        /*$http.post('http://apps.tucompualdia.net/APIcole/app_desarrollo/api/registro', parametros)
+        .then(function (respuesta) {
+            var res = respuesta;
+            alert(respuesta);
+        }, function (error) {
+            alert(error);
+        })*/
     }
     
     $scope.TerminarRegistroPrueba = function (plan)
