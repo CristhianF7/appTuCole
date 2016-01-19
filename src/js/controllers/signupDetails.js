@@ -57,24 +57,13 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', fu
         $http({
             method: 'POST',
             url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/registro',
-            dataType: "json",
-            data: JSON.stringify(parametros),
-            success: function(respuesta) {
-                var res = respuesta;
-                alert(respuesta)
-            },
-            error: function (event, data){
-                alert(data);
-            }
-        });
-        
-        /*$http.post('http://apps.tucompualdia.net/APIcole/app_desarrollo/api/registro', parametros)
-        .then(function (respuesta) {
+            data: JSON.stringify(parametros)
+        }).then(function (respuesta) {
             var res = respuesta;
             alert(respuesta);
         }, function (error) {
             alert(error);
-        })*/
+        });
     }
     
     $scope.TerminarRegistroPrueba = function (plan)

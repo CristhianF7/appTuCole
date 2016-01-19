@@ -1,6 +1,11 @@
 'use strict';
 
-app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $http, $state) {
+app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', function($scope, $http, $state, $stateParams) {
+    $scope.InformacionColegio = {};
+    $scope.InformacionColegio.ubicacion = {};
+    $scope.InformacionColegio.tipoInstitucion = {};
+    $scope.InformacionColegio.tipoJornada = {};
+    
     $scope.Jornadas = [
         { descripcion: 'Completa',  codigo: 'CP' },
         { descripcion: 'Mañana',    codigo: 'MA'},
@@ -25,13 +30,8 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
             precioSemestral : "12'500.000", precioAnual : "22'000.000", clase : "block panel padder-v bg-success item" }
     ]
     
-    
-    $scope.tipoInstitucion = {};
-    $scope.tipoJornada = {};
-    $scope.ubicacion = {};
-    
-    $scope.refreshAddresses = function(address) {
-        var params = {address: address, sensor: false};
+    $scope.BuscarDireccion = function(direccion) {
+        var params = {address: direccion, sensor: false};
         return $http.get(
           'http://maps.googleapis.com/maps/api/geocode/json',
           {params: params}
@@ -40,7 +40,33 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
         });
     };
     
-    $scope.VerPlan = function (plan)
+    $scope.TerminarRegistro = function (plan)
+    {
+        var parametros = {
+                            nombreColegio: $scope.InformacionColegio.nombreColegio,
+                            username: $stateParams.info.usuario, 
+                            emailUsuario: $stateParams.info.email, 
+                            password: $stateParams.info.pass,
+                            emailColegio: $stateParams.info.email,
+                            estadoColegio: 1,
+                            tipoColegio: 1,                            
+                            telefonoColegio: $scope.InformacionColegio.telefono,
+                            sedePpal: $scope.InformacionColegio.sedePrincipal
+            }
+        
+        $http({
+            method: 'POST',
+            url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/registro',
+            data: JSON.stringify(parametros)
+        }).then(function (respuesta) {
+            var res = respuesta;
+            alert(respuesta);
+        }, function (error) {
+            alert(error);
+        });
+    }
+    
+    $scope.TerminarRegistroPrueba = function (plan)
     {
         
     }

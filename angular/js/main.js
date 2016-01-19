@@ -35,7 +35,9 @@ angular.module('app')
           asideFolded: false,
           asideDock: false,
           container: false
-        }
+        },
+        //Sesión
+        sessionId : null
       }
 
       // save settings to local storage

@@ -74757,18 +74757,23 @@ angular.module('app')
         app.value      = $provide.value;
     }
   ])
-  .config(['$translateProvider', function($translateProvider){
+  .config(['$translateProvider', '$httpProvider', function($translateProvider, $httpProvider){
     // Register a loader for the static files
     // So, the module will search missing translation tables under the specified urls.
     // Those urls are [prefix][langKey][suffix].
     $translateProvider.useStaticFilesLoader({
-      prefix: 'l10n/',
-      suffix: '.js'
+        prefix: 'l10n/',
+        suffix: '.js'
     });
     // Tell the module what language to use by default
     $translateProvider.preferredLanguage('en');
     // Tell the module to store the language in the local storage
     $translateProvider.useLocalStorage();
+
+    $httpProvider.defaults.headers.common = {};
+    $httpProvider.defaults.headers.post = {};
+    $httpProvider.defaults.headers.put = {};
+    $httpProvider.defaults.headers.patch = {};
   }]);
 // lazyload config
 
@@ -75219,6 +75224,7 @@ angular.module('app')
               })
               .state('access.signupDetails', {
                   url: '/signupDetails',
+                  params :  { info : null}, //{ email: null, usuario: null, pass: null},
                   templateUrl: 'tpl/page_signupDetails.html',
                   controller: 'SignUpDetails',
                   resolve: load( ['ui.select', 'ngImgCrop', 'js/controllers/signupDetails.js'])
@@ -75479,7 +75485,9 @@ angular.module('app')
           asideFolded: false,
           asideDock: false,
           container: false
-        }
+        },
+        //Sesión
+        sessionId : null
       }
 
       // save settings to local storage
@@ -77474,21 +77482,30 @@ app.controller('SigninFormController', ['$scope', '$http', '$state', function($s
     $scope.user = {};
     $scope.authError = null;
     $scope.login = function() {
-      $scope.authError = null;
-      // Try to login
-      //$http.post('api/login', {email: $scope.user.email, password: $scope.user.password})
-      //.then(function(response) {
-        //if ( !response.data.user ) {
-        //  $scope.authError = 'Email o Contraseña incorrectos';
-        //}else{
-          $state.go('app.dashboard-v1');
-        //}
-      //}, function(x) {
-        //$scope.authError = 'Error en Servidor';
-      //});
+        $scope.authError = null;
+        var parametros =  { username: $scope.user.username, password: $scope.user.password }
+
+        $http({
+            method: 'POST',
+            url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/login',
+            data: JSON.stringify(parametros),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            }
+        }).then(function (response) {
+            if (!response.data) {
+                $scope.authError = 'Email o contraseña incorrectos';
+            }
+            else {
+                $scope.app.sessionId = response.data.token;
+                $state.go('app.dashboard-v1');
+            }
+        }, function (error) {
+          $scope.authError = 'Error en Servidor';
+
+        });
     };
-  }])
-;
+}]);
 'use strict';
 
 // signup controller
@@ -77503,7 +77520,8 @@ app.controller('SignupFormController', ['$scope', '$http', '$state', function($s
       //if ( !response.data.user ) {
         //  $scope.authError = response;
         //}else{
-        $state.go('access.signupDetails');
+        var informacion = { email : $scope.user.email, usuario: $scope.user.usuario, pass : $scope.user.password }
+        $state.go('access.signupDetails', { info : informacion });
         //}
       //}, function(x) {
         //$scope.authError = 'Server Error';
@@ -77513,7 +77531,12 @@ app.controller('SignupFormController', ['$scope', '$http', '$state', function($s
  ;
 'use strict';
 
-app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $http, $state) {
+app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', function($scope, $http, $state, $stateParams) {
+    $scope.InformacionColegio = {};
+    $scope.InformacionColegio.ubicacion = {};
+    $scope.InformacionColegio.tipoInstitucion = {};
+    $scope.InformacionColegio.tipoJornada = {};
+    
     $scope.Jornadas = [
         { descripcion: 'Completa',  codigo: 'CP' },
         { descripcion: 'Mañana',    codigo: 'MA'},
@@ -77538,13 +77561,8 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
             precioSemestral : "12'500.000", precioAnual : "22'000.000", clase : "block panel padder-v bg-success item" }
     ]
     
-    
-    $scope.tipoInstitucion = {};
-    $scope.tipoJornada = {};
-    $scope.ubicacion = {};
-    
-    $scope.refreshAddresses = function(address) {
-        var params = {address: address, sensor: false};
+    $scope.BuscarDireccion = function(direccion) {
+        var params = {address: direccion, sensor: false};
         return $http.get(
           'http://maps.googleapis.com/maps/api/geocode/json',
           {params: params}
@@ -77553,7 +77571,33 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', function($scope, $
         });
     };
     
-    $scope.VerPlan = function (plan)
+    $scope.TerminarRegistro = function (plan)
+    {
+        var parametros = {
+                            nombreColegio: $scope.InformacionColegio.nombreColegio,
+                            username: $stateParams.info.usuario, 
+                            emailUsuario: $stateParams.info.email, 
+                            password: $stateParams.info.pass,
+                            emailColegio: $stateParams.info.email,
+                            estadoColegio: 1,
+                            tipoColegio: 1,                            
+                            telefonoColegio: $scope.InformacionColegio.telefono,
+                            sedePpal: $scope.InformacionColegio.sedePrincipal
+            }
+        
+        $http({
+            method: 'POST',
+            url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/registro',
+            data: JSON.stringify(parametros)
+        }).then(function (respuesta) {
+            var res = respuesta;
+            alert(respuesta);
+        }, function (error) {
+            alert(error);
+        });
+    }
+    
+    $scope.TerminarRegistroPrueba = function (plan)
     {
         
     }
