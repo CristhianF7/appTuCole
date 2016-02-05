@@ -1,6 +1,7 @@
 'use strict';
 
-app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', function($scope, $http, $state, $stateParams) {
+app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', 'SchoolService', 'toaster', 
+                                 function($scope, $http, $state, $stateParams, SchoolService, toaster) {
     $scope.InformacionColegio = {};
     $scope.InformacionColegio.ubicacion = {};
     $scope.InformacionColegio.tipoInstitucion = {};
@@ -34,7 +35,7 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', fu
         var params = {address: direccion, sensor: false};
         return $http.get(
           'http://maps.googleapis.com/maps/api/geocode/json',
-          {params: params}
+          { params: params }
         ).then(function(response) {
           $scope.ubicaciones = response.data.results;
         });
@@ -54,15 +55,13 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', fu
                             sedePpal: $scope.InformacionColegio.sedePrincipal
             }
         
-        $http({
-            method: 'POST',
-            url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/registro',
-            data: JSON.stringify(parametros)
-        }).then(function (respuesta) {
-            var res = respuesta;
-            alert(respuesta);
-        }, function (error) {
-            alert(error);
+        SchoolService.Registrar(parametros).then(function (respuesta) {
+            if (respuesta.data) {
+                toaster.success('Registro de Colegio', 'Colegio registrado correctamente');
+                $state.go('app.dashboard-v1');
+            }
+        }).catch(function (error) {
+             toaster.error('Registro de Colegio', 'Ocurrio un error creando tu colegio');
         });
     }
     

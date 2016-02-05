@@ -75227,7 +75227,7 @@ angular.module('app')
                   params :  { info : null}, //{ email: null, usuario: null, pass: null},
                   templateUrl: 'tpl/page_signupDetails.html',
                   controller: 'SignUpDetails',
-                  resolve: load( ['ui.select', 'ngImgCrop', 'js/controllers/signupDetails.js'])
+                  resolve: load( ['ui.select', 'ngImgCrop', 'toaster', 'js/controllers/signupDetails.js'])
               })
               .state('access.forgotpwd', {
                   url: '/forgotpwd',
@@ -75871,6 +75871,59 @@ angular.module('app')
       }
     };
   }]);
+'use strict';
+
+angular.module('app').service('LoginService', ['$http', '$q', function ($http, $q) { 
+
+    return {
+        Ingresar: LogIn
+    }
+
+    function LogIn (parametros) {
+        var defered = $q.defer();
+        var promise = defered.promise;
+
+        $http({
+            method: 'POST',
+            url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/login',
+            data: JSON.stringify(parametros),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            }
+        }).then(function (response) {
+            defered.resolve(response);
+        }, function (error) {
+            defered.reject(error);
+        });
+
+        return promise;
+    }
+}]);
+'use strict';
+
+angular.module('app').service('SchoolService', ['$http', '$q', function  ($http, $q) { 
+    
+    return {
+        Registrar: Register
+    }
+
+    function Register (parametros) {
+        var defered = $q.defer();
+        var promise = defered.promise;
+
+        $http({
+            method: 'POST',
+            url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/registro',
+            data: JSON.stringify(parametros)
+        }).then(function (response) {
+            defered.resolve(response);
+        }, function (error) {
+            defered.reject(error)
+        });
+
+        return promise;
+    }
+}]);
 'use strict';
 
 /**
@@ -77478,31 +77531,23 @@ app.controller('SelectCtrl', function($scope, $http, $timeout) {
 
 /* Controllers */
   // signin controller
-app.controller('SigninFormController', ['$scope', '$http', '$state', function($scope, $http, $state) {
+app.controller('SigninFormController', ['$scope', '$http', '$state', 'LoginService', function($scope, $http, $state, LoginService) {
     $scope.user = {};
     $scope.authError = null;
     $scope.login = function() {
         $scope.authError = null;
         var parametros =  { username: $scope.user.username, password: $scope.user.password }
-
-        $http({
-            method: 'POST',
-            url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/login',
-            data: JSON.stringify(parametros),
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-            }
-        }).then(function (response) {
-            if (!response.data) {
+        
+        LoginService.Ingresar(parametros).then(function (response) {
+            if (!response.data.token) {
                 $scope.authError = 'Email o contraseña incorrectos';
             }
             else {
                 $scope.app.sessionId = response.data.token;
                 $state.go('app.dashboard-v1');
             }
-        }, function (error) {
+        }).catch(function (error) {
           $scope.authError = 'Error en Servidor';
-
         });
     };
 }]);
@@ -77531,7 +77576,8 @@ app.controller('SignupFormController', ['$scope', '$http', '$state', function($s
  ;
 'use strict';
 
-app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', function($scope, $http, $state, $stateParams) {
+app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', 'SchoolService', 'toaster', 
+                                 function($scope, $http, $state, $stateParams, SchoolService, toaster) {
     $scope.InformacionColegio = {};
     $scope.InformacionColegio.ubicacion = {};
     $scope.InformacionColegio.tipoInstitucion = {};
@@ -77565,7 +77611,7 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', fu
         var params = {address: direccion, sensor: false};
         return $http.get(
           'http://maps.googleapis.com/maps/api/geocode/json',
-          {params: params}
+          { params: params }
         ).then(function(response) {
           $scope.ubicaciones = response.data.results;
         });
@@ -77585,15 +77631,13 @@ app.controller('SignUpDetails', ['$scope', '$http', '$state', '$stateParams', fu
                             sedePpal: $scope.InformacionColegio.sedePrincipal
             }
         
-        $http({
-            method: 'POST',
-            url: 'http://apps.tucompualdia.net/APIcole/app_desarrollo.php/api/registro',
-            data: JSON.stringify(parametros)
-        }).then(function (respuesta) {
-            var res = respuesta;
-            alert(respuesta);
-        }, function (error) {
-            alert(error);
+        SchoolService.Registrar(parametros).then(function (respuesta) {
+            if (respuesta.data) {
+                toaster.success('Registro de Colegio', 'Colegio registrado correctamente');
+                $state.go('app.dashboard-v1');
+            }
+        }).catch(function (error) {
+             toaster.error('Registro de Colegio', 'Ocurrio un error creando tu colegio');
         });
     }
     

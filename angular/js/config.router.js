@@ -260,7 +260,7 @@ angular.module('app')
                   params :  { info : null}, //{ email: null, usuario: null, pass: null},
                   templateUrl: 'tpl/page_signupDetails.html',
                   controller: 'SignUpDetails',
-                  resolve: load( ['ui.select', 'ngImgCrop', 'js/controllers/signupDetails.js'])
+                  resolve: load( ['ui.select', 'ngImgCrop', 'toaster', 'js/controllers/signupDetails.js'])
               })
               .state('access.forgotpwd', {
                   url: '/forgotpwd',
