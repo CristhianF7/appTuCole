@@ -9,7 +9,8 @@ app.controller('SigninFormController', ['$scope', '$http', '$state', 'LoginServi
         $scope.authError = null;
         var parametros =  { username: $scope.user.username, password: $scope.user.password }
         
-        LoginService.Ingresar(parametros).then(function (response) {
+        $state.go('app.dashboard-v1');
+        /*LoginService.Ingresar(parametros).then(function (response) {
             if (!response.data.token) {
                 $scope.authError = 'Email o contraseña incorrectos';
             }
@@ -19,6 +20,6 @@ app.controller('SigninFormController', ['$scope', '$http', '$state', 'LoginServi
             }
         }).catch(function (error) {
           $scope.authError = 'Error en Servidor';
-        });
+        });*/
     };
 }]);
